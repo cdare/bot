@@ -11,7 +11,7 @@ class JIRABotTestCase(unittest.TestCase):
     def setUp(self):
         path = os.path.dirname(os.path.realpath(__file__))
         self.store = path+'/resources/'+"test_queue.json" 
-        self.jira_client = JIRAClient(url="https://jira.just-eat.net/rest/api/2/", auth="***REMOVED***",username="***REMOVED***")
+        self.jira_client = JIRAClient(url="https://jira.just-eat.net/rest/api/2/", auth="",username="")
         self.filter_id ="16075"        
         self.test_issue_id="ISC-87"
         #clear all the comments in the test issue

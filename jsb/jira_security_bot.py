@@ -5,9 +5,10 @@ import logging
 import sys
 
 JIRA_URL = "https://jira.just-eat.net/rest/api/2/"
-AUTH = "***REMOVED***"
+AUTH = ""
 FILE = "resources/issue_queue.json"
-USER = "***REMOVED***"
+USER = ""
+FILTER = "16075"
 
 def add_issues_to_queue(issues):
     #get queue from storage
@@ -66,7 +67,7 @@ def watch_issues(jira_client, issues_to_watch):
 def get_issues(jira_client, filter_id):
 
     #Get filter then pull search string
-    search = jira_client.search("16075")
+    search = jira_client.search(FILTER)
 
     #check top issue: if greater than I then add to bot queue
     issue_ids=[issue["id"] for issue in search["issues"]]
@@ -81,9 +82,9 @@ if __name__ == "__main__":
     logging.basicConfig(level="INFO",stream=sys.stdout)
     
     comment = "This issue is being watchet by the JIRA Security bot as it containts a relevant term. If you feel this is in error, email security@just-eat.com"
-    JC = JIRAClient(url="https://jira.just-eat.net/rest/api/2/", auth="***REMOVED***", username=USER)
+    JC = JIRAClient(url="https://jira.just-eat.net/rest/api/2/", auth=AUTH, username=USER)
     
-    issues_ids=get_issues(JC, "16075")
+    issues_ids=get_issues(JC, FILTER)
     issues_queue = get_queue(save_path)
          
     new = find_new_issues(issues_queue["issues"],issues_ids)
