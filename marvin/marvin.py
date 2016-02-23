@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level="INFO",stream=sys.stdout)
     
-    comment = "This issue is being watchet by the JIRA Security bot as it containts a relevant term. If you feel this is in error, email security@just-eat.com"
+    comment = jconfig["message"] 
     
     JC = get_client(jconfig)    
     issues_ids=get_issues(JC, jconfig["filter_id"])
@@ -103,9 +103,9 @@ if __name__ == "__main__":
     new = find_new_issues(issues_queue["issues"],issues_ids)
     print(new)
     for issue in new:
-        JC.watch_issue(issue)
-        JC.add_comment(issue, comment)
+        #JC.watch_issue(issue)
+        #JC.add_comment(issue, comment)
         issues_queue['issues'].insert(0, issue)    
-    save_queue(issues_queue['issues'], save_path)
+        #save_queue(issues_queue['issues'], save_path)
 
 
