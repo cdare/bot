@@ -1,5 +1,5 @@
-# jirabot
-jirabot will look for issues that match a specified filter, and will add itself as a watcher to those issues (along with a friendly comment).
+# Marvin 
+Marvin will look for issues that match a specified filter, and will add itself as a watcher to those issues (along with a friendly comment).
 
 ## Dependencies
 python 3.x
