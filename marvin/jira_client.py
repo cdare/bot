@@ -28,7 +28,7 @@ class JIRAClient:
 
     def search(self, filter_id):
         jql = self.filter(filter_id)
-        data = {'jql':jql,'maxResults':10, 'startAt':0}
+        data = {'jql':jql,'maxResults':200, 'startAt':0}
         issues = self._request("search/", method="POST", payload=json.dumps(data))
         return issues
 
