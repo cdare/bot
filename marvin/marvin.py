@@ -18,7 +18,7 @@ def add_issues_to_queue(issues):
     queue = get_queue()
     
     
-def save_queue(queue):
+def save_queue(queue,fl):
     f = open(fl, "w")
     logging.info("Saving file to "+fl)
     save = {"issues":queue}
