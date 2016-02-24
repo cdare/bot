@@ -13,22 +13,22 @@ class JIRABotTestCase(unittest.TestCase):
     def setUp(self):
         config = configparser.ConfigParser()
         config.read("marvin_tests_config.ini")
-        jconfig = config["JIRA"]
+        self.jconfig = config["JIRA"]
         
         #establish save file
         path = os.path.dirname(os.path.realpath(__file__))
         self.store = path+config["DB"]["save_file"] 
         
         #setup JIRA Client
-        auth_s = "{0}:{1}".format(jconfig["username"],jconfig["password"]).encode("ascii")
+        auth_s = "{0}:{1}".format(self.jconfig["username"],self.jconfig["password"]).encode("ascii")
         basic = base64.b64encode(auth_s).decode("ascii")
         self.jira_client = JIRAClient(
-            url=jconfig["url"],
+            url=self.jconfig["url"],
             auth=basic,
-            username=jconfig["username"])
+            username=self.jconfig["username"])
                   
-        self.filter_id = jconfig["filter_id"]        
-        self.test_issue_id=jconfig["test_issue"]
+        self.filter_id = self.jconfig["filter_id"]        
+        self.test_issue_id=self.jconfig["test_issue"]
         #clear all the comments in the test issue
         comments = self.jira_client.get_comments(self.test_issue_id)
         #for c in comments["comments"]:
@@ -38,6 +38,8 @@ class JIRABotTestCase(unittest.TestCase):
     def tearDown(self):
         if(os.path.isfile(self.store)):
             os.remove(self.store)
+        issues = ["ISC-87", "ISC-90"]
+        self.jira_client.unwatch_issue(issues)
 
     def test_get_queue(self):
         queue = marvin.get_queue(self.store)
@@ -65,21 +67,27 @@ class JIRABotTestCase(unittest.TestCase):
         new = marvin.find_new_issues(issues,latest_issues)
         self.assertNotIn(new,issues)
  
-    def test_watching_new_issues(self):
-        issues = marvin.get_issues(self.jira_client, self.filter_id)
-        queue = marvin.get_queue(self.store)
-        new = marvin.find_new_issues(current=queue,latest=issues)
-        marvin.watch_issues(new)
-        for i in issues:
-            watchers = marvin.get_watchers(i)
-            self.assertIn(user_id,watchers)
-    
     def test_remove_watcher(self):
         response = self.jira_client.watch_issue("ISC-87")
         self.assertTrue(response)
         response = self.jira_client.unwatch_issue("ISC-87")
         self.assertTrue(response)
+
+    def test_add_watchers(self):
+        issues = ["ISC-87", "ISC-90"]
+        self.jira_client.watch_issue(issues)
+        for i in issues:
+            watchers = self.jira_client.get_watchers(i)
+            self.assertIn(self.jconfig["username"],[w["name"] for w in watchers["watchers"]])
     
+    def test_remove_watchers(self):
+        issues = ["ISC-87", "ISC-90"]
+        self.jira_client.watch_issue(issues)
+        self.jira_client.unwatch_issue(issues)
+        for i in issues:
+            watchers = self.jira_client.get_watchers(i)
+            self.assertNotIn(self.jconfig["username"],[w["name"] for w in watchers["watchers"]])
+ 
     def test_add_watcher(self):
         response = self.jira_client.unwatch_issue("ISC-87")
         self.assertTrue(response)

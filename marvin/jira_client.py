@@ -32,14 +32,24 @@ class JIRAClient:
         issues = self._request("search/", method="POST", payload=json.dumps(data))
         return issues
 
-    def watch_issue(self, issue_id):
-        post_data = self.username  
-        response = self._request("issue/"+issue_id+"/watchers/", method="POST", payload=json.dumps(post_data))
+    def watch_issue(self, issues):
+        if (isinstance(issues, list)==False):
+            issues = [issues]
+        post_data = self.username
+        for i in issues:      
+            response = self._request("issue/"+i+"/watchers/", method="POST", payload=json.dumps(post_data))
+        return True 
+    
+    def get_watchers(self, issue):
+        response = self._request("issue/"+issue+"/watchers/", method="GET")    
         return response
 
-    def unwatch_issue(self, issue_id):
-        response = self._request("issue/"+issue_id+"/watchers/?username="+self.username, method="DELETE")
-        return response
+    def unwatch_issue(self, issues):
+        if (isinstance(issues, list)==False):
+            issues = [issues]
+        for i in issues:
+            response = self._request("issue/"+i+"/watchers/?username="+self.username, method="DELETE")
+        return True
 
     def add_comment(self, issue_id, comment):
         data = {'body':comment}
