@@ -108,6 +108,8 @@ class JIRABotTestCase(unittest.TestCase):
         self.assertIsNotNone(queue)
         self.assertIsNotNone(queue["issues"])
 
+    #def test_handle_no_config(self):
+        
 #logging.basicConfig(level="INFO",stream=sys.stdout)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(JIRABotTestCase)
